@@ -1,6 +1,7 @@
 export type Source = 'google_maps' | 'instagram' | 'linkedin' | 'facebook'
 export type Priority = 'high' | 'normal'
 export type JobStatus = 'pending' | 'running' | 'done' | 'failed' | 'cancelled'
+export type SiteFilter = 'all' | 'without_site' | 'with_site'
 
 export interface Lead {
   name: string
@@ -14,8 +15,10 @@ export interface Lead {
   instagram: string
   linkedin: string
   facebook: string
+  whatsapp: string
   rating: string
   reviews: string
+  category: string
   source: Source
   priority: Priority
   scrapedAt: string
@@ -52,6 +55,7 @@ export interface ScrapeConfig {
   cities: string[]
   perCity: number
   sources: Source[]
+  siteFilter: SiteFilter
 }
 
 export interface ValidationError {

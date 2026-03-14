@@ -39,6 +39,6 @@ export const NICHE_SUGGESTIONS: NicheSuggestion[] = [
   { label: 'Imobiliária', value: 'imobiliária', icon: '🏢', category: 'Serviços' },
 ]
 
-export const NICHE_CATEGORIES = [
-  ...new Set(NICHE_SUGGESTIONS.map((n) => n.category)),
-]
+export const NICHE_CATEGORIES = Array.from(
+  new Set(NICHE_SUGGESTIONS.map((n) => n.category))
+)

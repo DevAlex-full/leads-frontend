@@ -26,12 +26,21 @@ export default function Home() {
   const [error, setError] = useState('')
   const [isRunning, setIsRunning] = useState(false)
   const [backendOnline, setBackendOnline] = useState<boolean | null>(null)
+  const [accumulated, setAccumulated] = useState(0)
 
   const pollingRef = useRef<ReturnType<typeof setInterval> | null>(null)
 
+  // Verifica backend e carrega stats acumuladas
   useEffect(() => {
     api.checkHealth().then(() => setBackendOnline(true)).catch(() => setBackendOnline(false))
   }, [])
+
+  useEffect(() => {
+    if (!token) return
+    api.getAccumulatedStats(token)
+      .then((s) => setAccumulated(s.total))
+      .catch(() => {})
+  }, [token])
 
   function stopPolling() {
     if (pollingRef.current) { clearInterval(pollingRef.current); pollingRef.current = null }
@@ -41,6 +50,8 @@ export default function Home() {
     try {
       const result = await api.getResults(id, token)
       setLeads(result.leads)
+      // Atualiza o total acumulado após scraping concluído
+      api.getAccumulatedStats(token).then((s) => setAccumulated(s.total)).catch(() => {})
     } catch (err) {
       setError(err instanceof ApiError ? err.message : 'Erro ao buscar resultados.')
     }
@@ -115,7 +126,6 @@ export default function Home() {
             ⚠️ <strong>Backend offline.</strong> Certifique-se que o servidor Express está rodando.
           </div>
         )}
-
         {error && (
           <div style={{ background: '#fef2f2', border: '1px solid #fecaca', borderRadius: 8, padding: '12px 16px', fontSize: 13, color: '#dc2626', marginBottom: 16, display: 'flex', justifyContent: 'space-between' }}>
             <span><strong>Erro:</strong> {error}</span>
@@ -123,7 +133,7 @@ export default function Home() {
           </div>
         )}
 
-        <StatsCards leads={leads} leadsCount={leadsCount || leads.length} />
+        <StatsCards leads={leads} leadsCount={leadsCount || leads.length} accumulated={accumulated} />
         <ConfigPanel onStart={handleStart} onCancel={handleCancel} isRunning={isRunning} />
 
         {showProgress && (
@@ -132,7 +142,6 @@ export default function Home() {
             progressLabel={progressLabel} logs={logs} leadsCount={leadsCount}
           />
         )}
-
         {leads.length > 0 && jobId && (
           <LeadsTable leads={leads} jobId={jobId} niche={currentNiche} />
         )}

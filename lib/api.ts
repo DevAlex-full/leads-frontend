@@ -30,6 +30,13 @@ export const authApi = {
     request<{ message: string }>('POST', '/api/auth/reset-password', { token, password }),
 }
 
+export interface AccumulatedStats {
+  total: number
+  byNiche: Record<string, number>
+  bySource: Record<string, number>
+  lastScrapedAt: string | null
+}
+
 export const api = {
   startScrape: (config: ScrapeConfig, token: string): Promise<{ jobId: string }> =>
     request('POST', '/api/scrape/start', config, token),
@@ -39,13 +46,10 @@ export const api = {
     request('GET', `/api/scrape/results/${jobId}`, undefined, token),
   cancelJob: (jobId: string, token: string): Promise<void> =>
     request('DELETE', `/api/scrape/cancel/${jobId}`, undefined, token),
+  getAccumulatedStats: (token: string): Promise<AccumulatedStats> =>
+    request('GET', '/api/scrape/stats', undefined, token),
   checkHealth: (): Promise<{ status: string }> =>
-  fetch(`${API_URL}/health`)
-    .then((r) => r.json())
-    .then((d) => {
-      if (!d.success && d.status !== 'ok') throw new Error('offline')
-      return d.data || d
-    }),
+    fetch(`${API_URL}/health`).then(r => r.json()).then(d => d.data || d),
   downloadUrl: (jobId: string, format: 'md' | 'csv', niche: string): string =>
     `${API_URL}/api/scrape/download/${jobId}?format=${format}&niche=${encodeURIComponent(niche)}`,
 }

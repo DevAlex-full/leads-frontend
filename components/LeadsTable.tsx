@@ -30,8 +30,8 @@ export default function LeadsTable({ leads, jobId, niche }: Props) {
   const [page, setPage] = useState(1)
   const PER_PAGE = 25
 
-  const cities = [...new Set(leads.map((l) => l.city).filter(Boolean))].sort()
-  const sources = [...new Set(leads.map((l) => l.source))]
+  const cities = Array.from(new Set(leads.map((l) => l.city).filter(Boolean))).sort()
+  const sources = Array.from(new Set(leads.map((l) => l.source)))
 
   const filtered = leads.filter((l) => {
     if (filterCity && l.city !== filterCity) return false
@@ -119,7 +119,7 @@ export default function LeadsTable({ leads, jobId, niche }: Props) {
         <table>
           <thead>
             <tr style={{ borderBottom: '2px solid #f3f4f6' }}>
-              {['', 'Nome', 'Cidade/UF', 'Telefone', 'E-mail', 'Instagram', 'LinkedIn', 'Facebook', 'Site', 'Nota', 'Fonte'].map((h) => (
+              {['', 'Nome', 'Cidade/UF', 'Telefone', 'E-mail', 'WhatsApp', 'Instagram', 'LinkedIn', 'Facebook', 'Site', 'Categoria', 'Nota', 'Fonte'].map((h) => (
                 <th key={h} style={S.th}>{h}</th>
               ))}
             </tr>
@@ -127,7 +127,7 @@ export default function LeadsTable({ leads, jobId, niche }: Props) {
           <tbody>
             {paginated.length === 0 && (
               <tr>
-                <td colSpan={11} style={{ textAlign: 'center', padding: '24px', color: '#9ca3af', fontSize: 13 }}>
+                <td colSpan={13} style={{ textAlign: 'center', padding: '24px', color: '#9ca3af', fontSize: 13 }}>
                   Nenhum lead encontrado com os filtros aplicados.
                 </td>
               </tr>
@@ -158,6 +158,11 @@ export default function LeadsTable({ leads, jobId, niche }: Props) {
                     : '—'}
                 </td>
                 <td style={S.td}>
+                  {(l as any).whatsapp
+                    ? <a href={(l as any).whatsapp} target="_blank" rel="noreferrer" style={{ fontSize: 12, color: '#25d366', fontWeight: 600 }}>zap</a>
+                    : '—'}
+                </td>
+                <td style={S.td}>
                   {l.instagram
                     ? <a href={l.instagram} target="_blank" rel="noreferrer" style={{ fontSize: 12, color: '#e1306c' }}>insta</a>
                     : '—'}
@@ -176,6 +181,9 @@ export default function LeadsTable({ leads, jobId, niche }: Props) {
                   {l.website
                     ? <a href={l.website} target="_blank" rel="noreferrer" style={{ fontSize: 11 }}>site</a>
                     : <span style={{ fontSize: 11, color: '#9ca3af' }}>sem site</span>}
+                </td>
+                <td style={{ ...S.td, fontSize: 11, color: '#6b7280', maxWidth: 120, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                  {(l as any).category || '—'}
                 </td>
                 <td style={{ ...S.td, fontSize: 11, whiteSpace: 'nowrap' }}>
                   {l.rating ? `${l.rating}/5 (${l.reviews})` : '—'}
