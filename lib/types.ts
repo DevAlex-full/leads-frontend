@@ -1,0 +1,60 @@
+export type Source = 'google_maps' | 'instagram' | 'linkedin' | 'facebook'
+export type Priority = 'high' | 'normal'
+export type JobStatus = 'pending' | 'running' | 'done' | 'failed' | 'cancelled'
+
+export interface Lead {
+  name: string
+  niche: string
+  city: string
+  state: string
+  phone: string
+  email: string
+  address: string
+  website: string
+  instagram: string
+  linkedin: string
+  facebook: string
+  rating: string
+  reviews: string
+  source: Source
+  priority: Priority
+  scrapedAt: string
+}
+
+export interface LogEntry {
+  time: string
+  message: string
+  type: 'info' | 'success' | 'error'
+}
+
+export interface JobStatusResponse {
+  id: string
+  status: JobStatus
+  progress: number
+  progressLabel: string
+  logs: LogEntry[]
+  leadsCount: number
+  error?: string
+  createdAt: string
+  finishedAt?: string
+}
+
+export interface JobResultsResponse {
+  leads: Lead[]
+  total: number
+  bySource: Record<string, number>
+  byPriority: { high: number; normal: number }
+}
+
+export interface ScrapeConfig {
+  apiKey: string
+  niche: string
+  cities: string[]
+  perCity: number
+  sources: Source[]
+}
+
+export interface ValidationError {
+  field: string
+  message: string
+}
