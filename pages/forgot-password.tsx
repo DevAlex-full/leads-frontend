@@ -27,7 +27,7 @@ export default function ForgotPasswordPage() {
 
   return (
     <>
-      <Head><title>Recuperar senha · LeadFlow</title></Head>
+      <Head><title>Recuperar senha · AxLead</title></Head>
       <AuthCard
         title={sent ? 'Verifique seu e-mail' : 'Recuperar senha'}
         subtitle={sent ? `Enviamos um link para ${email}` : 'Informe seu e-mail para receber o link de recuperação'}
@@ -62,4 +62,4 @@ export default function ForgotPasswordPage() {
       </AuthCard>
     </>
   )
-} 
+}

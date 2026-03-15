@@ -54,7 +54,7 @@ export default function RegisterPage() {
 
   return (
     <>
-      <Head><title>Criar conta · LeadFlow</title></Head>
+      <Head><title>Criar conta · AxLead</title></Head>
       <AuthCard
         title="Criar sua conta"
         subtitle="Comece a gerar leads qualificados hoje mesmo"

@@ -30,7 +30,7 @@ export default function LoginPage() {
 
   return (
     <>
-      <Head><title>Entrar · LeadFlow</title></Head>
+      <Head><title>Entrar · AxLead</title></Head>
       <AuthCard
         title="Bem-vindo de volta"
         subtitle="Entre na sua conta para continuar gerando leads"
@@ -92,4 +92,4 @@ export default function LoginPage() {
       </AuthCard>
     </>
   )
-} 
+}

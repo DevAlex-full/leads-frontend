@@ -17,7 +17,7 @@ export default function AuthCard({ title, subtitle, children, footer }: Props) {
         {/* Logo */}
         <Link href="/" style={S.logo}>
           <span style={S.logoIcon}>◈</span>
-          <span style={S.logoText}>LeadFlow</span>
+          <span style={S.logoText}>AxLead</span>
         </Link>
 
         <div style={S.divider} />
@@ -34,7 +34,7 @@ export default function AuthCard({ title, subtitle, children, footer }: Props) {
       </div>
 
       <p style={S.legal}>
-        © 2026 LeadFlow · Todos os direitos reservados
+        © 2026 AxLead · Todos os direitos reservados
       </p>
     </div>
   )

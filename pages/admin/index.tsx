@@ -103,7 +103,7 @@ export default function AdminPage() {
 
   return (
     <>
-      <Head><title>Admin · LeadFlow</title></Head>
+      <Head><title>Admin · AxLead</title></Head>
       <Layout>
         {/* Page header */}
         <div style={S.pageHeader}>

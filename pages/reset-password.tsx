@@ -39,7 +39,7 @@ export default function ResetPasswordPage() {
 
   if (!token) return (
     <>
-      <Head><title>Link inválido · LeadFlow</title></Head>
+      <Head><title>Link inválido · AxLead</title></Head>
       <AuthCard title="Link inválido" subtitle="Este link expirou ou é inválido."
         footer={<Link href="/forgot-password" style={{ color: 'var(--indigo)', fontWeight: 600 }}>Solicitar novo link</Link>}>
         <div className={`${s.alert} ${s.alertError}`} style={{ textAlign: 'center' }}>
@@ -51,7 +51,7 @@ export default function ResetPasswordPage() {
 
   return (
     <>
-      <Head><title>Nova senha · LeadFlow</title></Head>
+      <Head><title>Nova senha · AxLead</title></Head>
       <AuthCard title={success ? 'Senha redefinida!' : 'Criar nova senha'}
         subtitle={success ? 'Redirecionando para o login...' : 'Defina uma senha segura para sua conta'}
         footer={<Link href="/login" style={{ color: 'var(--indigo)', fontWeight: 600 }}>← Voltar ao login</Link>}>

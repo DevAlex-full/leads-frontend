@@ -37,7 +37,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           {/* Logo */}
           <Link href="/" style={S.logo}>
             <span style={S.logoIcon}>◈</span>
-            <span style={S.logoText}>LeadFlow</span>
+            <span style={S.logoText}>AxLead</span>
           </Link>
 
           {/* Desktop Nav — oculto no mobile via JS */}
@@ -112,7 +112,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       <main style={S.main}>{children}</main>
 
       <footer style={S.footer}>
-        <p>© 2026 LeadFlow · Desenvolvido por{' '}
+        <p>© 2026 AxLead · Desenvolvido por{' '}
           <a href="https://github.com/DevAlex-full" target="_blank" rel="noreferrer" style={{ color: 'var(--indigo)', fontWeight: 600 }}>
             DevAlex-full
           </a>
