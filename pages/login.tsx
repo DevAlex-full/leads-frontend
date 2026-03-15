@@ -4,6 +4,7 @@ import { useRouter } from 'next/router'
 import Head from 'next/head'
 import Link from 'next/link'
 import AuthCard from '../components/AuthCard'
+import s from '../styles/auth.module.css'
 
 export default function LoginPage() {
   const router = useRouter()
@@ -12,133 +13,83 @@ export default function LoginPage() {
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
-
-  // Mensagem vinda do redirect (ex: "Sessão expirada")
-  const callbackError = router.query.error as string | undefined
+  const expired = router.query.error === 'SessionRequired'
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     setError('')
     setLoading(true)
-
-    const result = await signIn('credentials', {
-      email: email.trim(),
-      password,
-      redirect: false,
-    })
-
+    const result = await signIn('credentials', { email: email.trim(), password, redirect: false })
     setLoading(false)
-
     if (result?.error) {
-      setError(result.error === 'CredentialsSignin'
-        ? 'E-mail ou senha incorretos.'
-        : result.error)
+      setError(result.error === 'CredentialsSignin' ? 'E-mail ou senha incorretos.' : result.error)
       return
     }
-
     router.push('/')
   }
 
   return (
     <>
-      <Head><title>Login — Gerador de Leads</title></Head>
+      <Head><title>Entrar · LeadFlow</title></Head>
       <AuthCard
-        title="Entrar na conta"
-        subtitle="Acesse sua conta para gerar leads"
+        title="Bem-vindo de volta"
+        subtitle="Entre na sua conta para continuar gerando leads"
         footer={
-          <>
+          <span>
             Não tem conta?{' '}
-            <Link href="/register" style={{ color: '#2563eb', fontWeight: 600 }}>
-              Cadastre-se gratuitamente
+            <Link href="/register" style={{ color: 'var(--indigo)', fontWeight: 600 }}>
+              Criar conta gratuita
             </Link>
-          </>
+          </span>
         }
       >
-        {/* Alerta de sessão expirada */}
-        {callbackError === 'SessionRequired' && (
-          <div style={{ ...S.alert, ...S.alertWarn }}>
-            ⚠️ Sua sessão expirou. Faça login novamente.
+        {expired && (
+          <div className={`${s.alert} ${s.alertWarn}`}>
+            Sua sessão expirou. Por favor, entre novamente.
           </div>
         )}
-
-        {error && (
-          <div style={{ ...S.alert, ...S.alertError }}>{error}</div>
-        )}
+        {error && <div className={`${s.alert} ${s.alertError}`}>{error}</div>}
 
         <form onSubmit={handleSubmit}>
-          <div style={S.field}>
-            <label style={S.label}>E-mail</label>
+          <div className={s.field}>
+            <label className={s.label}>E-mail</label>
             <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="seu@email.com"
-              required
-              autoComplete="email"
-              style={S.input}
+              className={s.input}
+              type="email" value={email}
+              onChange={e => setEmail(e.target.value)}
+              placeholder="voce@empresa.com"
+              required autoComplete="email"
             />
           </div>
 
-          <div style={S.field}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
-              <label style={{ ...S.label, margin: 0 }}>Senha</label>
-              <Link href="/forgot-password" style={{ fontSize: 12, color: '#2563eb' }}>
+          <div className={s.field}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 7 }}>
+              <label className={s.label} style={{ margin: 0 }}>Senha</label>
+              <Link href="/forgot-password" style={{ fontSize: 12, color: 'var(--indigo)', fontWeight: 500 }}>
                 Esqueci minha senha
               </Link>
             </div>
             <div style={{ position: 'relative' }}>
               <input
+                className={s.input}
                 type={showPassword ? 'text' : 'password'}
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="Sua senha"
-                required
-                autoComplete="current-password"
-                style={{ ...S.input, paddingRight: 44 }}
+                onChange={e => setPassword(e.target.value)}
+                placeholder="••••••••"
+                required autoComplete="current-password"
+                style={{ paddingRight: 44 }}
               />
-              <button
-                type="button"
-                onClick={() => setShowPassword((v) => !v)}
-                style={S.eyeBtn}
-              >
+              <button type="button" className={s.eyeBtn} onClick={() => setShowPassword(v => !v)}>
                 {showPassword ? '🙈' : '👁️'}
               </button>
             </div>
           </div>
 
-          <button
-            type="submit"
-            disabled={loading}
-            style={{ ...S.btn, opacity: loading ? 0.7 : 1 }}
-          >
-            {loading ? 'Entrando...' : 'Entrar'}
+          <button type="submit" className={s.btn} disabled={loading}>
+            {loading ? 'Entrando...' : 'Entrar na conta →'}
           </button>
         </form>
       </AuthCard>
     </>
   )
-}
-
-const S: Record<string, React.CSSProperties> = {
-  field: { marginBottom: 16 },
-  label: { display: 'block', fontSize: 13, fontWeight: 600, color: '#374151', marginBottom: 6 },
-  input: {
-    width: '100%', padding: '10px 12px',
-    border: '1px solid #d1d5db', borderRadius: 8,
-    fontSize: 14, outline: 'none', background: '#fff',
-    color: '#1a1a2e', boxSizing: 'border-box',
-  },
-  eyeBtn: {
-    position: 'absolute', right: 10, top: '50%', transform: 'translateY(-50%)',
-    background: 'none', border: 'none', cursor: 'pointer', fontSize: 16, padding: '0 4px',
-  },
-  btn: {
-    width: '100%', padding: '11px', marginTop: 8,
-    background: '#2563eb', color: '#fff',
-    border: 'none', borderRadius: 8,
-    fontSize: 15, fontWeight: 700, cursor: 'pointer',
-  },
-  alert: { padding: '10px 14px', borderRadius: 8, fontSize: 13, marginBottom: 14 },
-  alertError: { background: '#fef2f2', border: '1px solid #fecaca', color: '#dc2626' },
-  alertWarn: { background: '#fffbeb', border: '1px solid #fde68a', color: '#92400e' },
-}
+} 

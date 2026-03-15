@@ -1,4 +1,5 @@
 import { Lead } from '../lib/types'
+import { useBreakpoint } from '../lib/useBreakpoint'
 
 interface Props {
   leads: Lead[]
@@ -7,49 +8,47 @@ interface Props {
 }
 
 export default function StatsCards({ leads, leadsCount, accumulated }: Props) {
-  const hot = leads.filter((l) => l.priority === 'high').length
-  const withInsta = leads.filter((l) => l.instagram).length
-  const withEmail = leads.filter((l) => l.email).length
-  const withLinkedin = leads.filter((l) => l.linkedin).length
+  const bp = useBreakpoint()
+  const hot = leads.filter(l => l.priority === 'high').length
+  const withInsta = leads.filter(l => l.instagram).length
+  const withLinkedin = leads.filter(l => l.linkedin).length
+  const withEmail = leads.filter(l => l.email).length
 
   const stats = [
-    { label: 'Total acumulado', value: accumulated ?? 0, color: '#7c3aed', title: 'Total de leads únicos coletados em todas as buscas' },
-    { label: 'Nesta busca', value: leadsCount, color: '#1a1a2e', title: 'Leads novos desta sessão' },
-    { label: 'Sem site (quentes)', value: hot, color: '#16a34a', title: 'Leads sem site — mais fáceis de converter' },
-    { label: 'Com Instagram', value: withInsta, color: '#e1306c', title: 'Leads com perfil no Instagram' },
-    { label: 'Com LinkedIn', value: withLinkedin, color: '#0a66c2', title: 'Leads com perfil no LinkedIn' },
-    { label: 'Com e-mail', value: withEmail, color: '#7c3aed', title: 'Leads com e-mail identificado' },
+    { label: 'Total acumulado', value: accumulated ?? 0, color: 'var(--indigo)', bg: 'var(--indigo-pale)', icon: '◈', highlight: true },
+    { label: 'Nesta busca', value: leadsCount, color: 'var(--navy)', bg: 'var(--gray-100)', icon: '⊕' },
+    { label: 'Sem site', value: hot, color: 'var(--green)', bg: 'var(--green-light)', icon: '🔥' },
+    { label: 'Com Instagram', value: withInsta, color: '#E1306C', bg: '#FFF0F5', icon: '◉' },
+    { label: 'Com LinkedIn', value: withLinkedin, color: '#0A66C2', bg: '#EEF5FF', icon: '◈' },
+    { label: 'Com e-mail', value: withEmail, color: 'var(--indigo)', bg: 'var(--indigo-pale)', icon: '✉' },
   ]
 
+  const cols = bp === 'mobile' ? 2 : bp === 'tablet' ? 3 : 6
+
   return (
-    <div style={S.grid}>
-      {stats.map((s) => (
-        <div key={s.label} style={{ ...S.card, ...(s.label === 'Total acumulado' ? S.cardHighlight : {}) }} title={s.title}>
-          <p style={S.label}>{s.label}</p>
-          <p style={{ ...S.value, color: s.color }}>{s.value.toLocaleString('pt-BR')}</p>
+    <div style={{ display: 'grid', gridTemplateColumns: `repeat(${cols}, 1fr)`, gap: 12, marginBottom: 20 }}>
+      {stats.map((s, i) => (
+        <div key={s.label} style={{
+          background: s.highlight ? 'linear-gradient(135deg, #EEF0FB 0%, #F5F6FF 100%)' : 'var(--white)',
+          border: s.highlight ? '1px solid var(--indigo-light)' : '1px solid var(--gray-200)',
+          borderRadius: 'var(--radius-lg)',
+          padding: bp === 'mobile' ? '14px 14px' : '18px 20px',
+          boxShadow: 'var(--shadow-sm)',
+          animationDelay: `${i * 60}ms`,
+        }} className="animate-in">
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 10 }}>
+            <p style={{ fontSize: 10, fontWeight: 600, color: 'var(--gray-400)', textTransform: 'uppercase', letterSpacing: '0.6px', margin: 0, lineHeight: 1.3 }}>
+              {s.label}
+            </p>
+            <div style={{ width: 26, height: 26, borderRadius: 'var(--radius-sm)', background: s.bg, color: s.color, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 12, fontWeight: 700, flexShrink: 0 }}>
+              {s.icon}
+            </div>
+          </div>
+          <p style={{ fontSize: bp === 'mobile' ? 22 : 26, fontWeight: 700, margin: 0, letterSpacing: '-0.5px', lineHeight: 1, color: s.color }}>
+            {s.value.toLocaleString('pt-BR')}
+          </p>
         </div>
       ))}
     </div>
   )
-}
-
-const S: Record<string, React.CSSProperties> = {
-  grid: {
-    display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))',
-    gap: 12,
-    marginBottom: 20,
-  },
-  card: {
-    background: '#fff',
-    border: '1px solid #e5e7eb',
-    borderRadius: 10,
-    padding: '14px 16px',
-  },
-  cardHighlight: {
-    background: '#faf5ff',
-    border: '1px solid #ddd6fe',
-  },
-  label: { fontSize: 11, color: '#6b7280', marginBottom: 4, fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em' },
-  value: { fontSize: 28, fontWeight: 700 },
 }

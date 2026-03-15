@@ -10,40 +10,89 @@ interface Props {
 export default function AuthCard({ title, subtitle, children, footer }: Props) {
   return (
     <div style={S.page}>
+      {/* Background subtle gradient */}
+      <div style={S.bg} />
+
       <div style={S.card}>
         {/* Logo */}
-        <Link href="/" style={S.logo}>🎯 Gerador de Leads</Link>
+        <Link href="/" style={S.logo}>
+          <span style={S.logoIcon}>◈</span>
+          <span style={S.logoText}>LeadFlow</span>
+        </Link>
 
-        {/* Título */}
+        <div style={S.divider} />
+
+        {/* Header */}
         <h1 style={S.title}>{title}</h1>
         {subtitle && <p style={S.subtitle}>{subtitle}</p>}
 
-        {/* Conteúdo (form) */}
-        <div>{children}</div>
+        {/* Content */}
+        <div style={S.body}>{children}</div>
 
-        {/* Rodapé (links) */}
+        {/* Footer */}
         {footer && <div style={S.footer}>{footer}</div>}
       </div>
+
+      <p style={S.legal}>
+        © 2026 LeadFlow · Todos os direitos reservados
+      </p>
     </div>
   )
 }
 
 const S: Record<string, React.CSSProperties> = {
   page: {
-    minHeight: '100vh', display: 'flex', alignItems: 'center',
-    justifyContent: 'center', background: '#f4f5f7', padding: '20px',
+    minHeight: '100vh',
+    display: 'flex', flexDirection: 'column',
+    alignItems: 'center', justifyContent: 'center',
+    padding: '24px 16px',
+    position: 'relative',
+    background: 'var(--gray-50)',
+  },
+  bg: {
+    position: 'fixed', inset: 0, zIndex: 0,
+    background: 'radial-gradient(ellipse 80% 50% at 50% -20%, rgba(84,105,212,0.12), transparent)',
+    pointerEvents: 'none',
   },
   card: {
-    width: '100%', maxWidth: 420,
-    background: '#fff', border: '1px solid #e5e7eb',
-    borderRadius: 16, padding: '36px 40px',
+    position: 'relative', zIndex: 1,
+    width: '100%', maxWidth: 440,
+    background: 'var(--white)',
+    border: '1px solid var(--gray-200)',
+    borderRadius: 'var(--radius-xl)',
+    padding: '40px',
+    boxShadow: 'var(--shadow-lg)',
+    animation: 'fadeInUp 0.4s ease',
   },
   logo: {
-    display: 'block', textAlign: 'center',
-    fontSize: 15, fontWeight: 700, color: '#1a1a2e',
-    textDecoration: 'none', marginBottom: 24,
+    display: 'flex', alignItems: 'center', justifyContent: 'center',
+    gap: 10, textDecoration: 'none', marginBottom: 28,
   },
-  title: { fontSize: 20, fontWeight: 700, color: '#1a1a2e', margin: '0 0 4px', textAlign: 'center' },
-  subtitle: { fontSize: 13, color: '#6b7280', margin: '0 0 24px', textAlign: 'center' },
-  footer: { marginTop: 20, textAlign: 'center', fontSize: 13, color: '#6b7280' },
+  logoIcon: { fontSize: 26, color: 'var(--indigo)', lineHeight: 1 },
+  logoText: { fontSize: 20, fontWeight: 700, color: 'var(--navy)', letterSpacing: '-0.4px' },
+  divider: {
+    height: 1, background: 'var(--gray-100)',
+    margin: '0 -40px 28px',
+  },
+  title: {
+    fontSize: 22, fontWeight: 700, color: 'var(--navy)',
+    letterSpacing: '-0.4px', marginBottom: 6, textAlign: 'center',
+  },
+  subtitle: {
+    fontSize: 14, color: 'var(--gray-500)',
+    textAlign: 'center', marginBottom: 28, lineHeight: 1.5,
+  },
+  body: {},
+  footer: {
+    marginTop: 24,
+    paddingTop: 20,
+    borderTop: '1px solid var(--gray-100)',
+    textAlign: 'center',
+    fontSize: 13, color: 'var(--gray-500)',
+  },
+  legal: {
+    position: 'relative', zIndex: 1,
+    marginTop: 24, fontSize: 12, color: 'var(--gray-400)',
+    textAlign: 'center',
+  },
 }
