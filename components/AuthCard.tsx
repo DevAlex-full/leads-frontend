@@ -16,8 +16,7 @@ export default function AuthCard({ title, subtitle, children, footer }: Props) {
       <div style={S.card}>
         {/* Logo */}
         <Link href="/" style={S.logo}>
-          <span style={S.logoIcon}>◈</span>
-          <span style={S.logoText}>AxLead</span>
+          <img src="/logo.png" alt="AxLead" style={{ height: 40, width: 'auto', display: 'block' }} />
         </Link>
 
         <div style={S.divider} />
@@ -34,7 +33,7 @@ export default function AuthCard({ title, subtitle, children, footer }: Props) {
       </div>
 
       <p style={S.legal}>
-        © 2026 AxLead · Todos os direitos reservados
+        © 2026 AxLead · Desenvolvido por DevAlex-full
       </p>
     </div>
   )
@@ -68,8 +67,7 @@ const S: Record<string, React.CSSProperties> = {
     display: 'flex', alignItems: 'center', justifyContent: 'center',
     gap: 10, textDecoration: 'none', marginBottom: 28,
   },
-  logoIcon: { fontSize: 26, color: 'var(--indigo)', lineHeight: 1 },
-  logoText: { fontSize: 20, fontWeight: 700, color: 'var(--navy)', letterSpacing: '-0.4px' },
+
   divider: {
     height: 1, background: 'var(--gray-100)',
     margin: '0 -40px 28px',

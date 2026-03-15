@@ -36,8 +36,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         <div style={S.navInner}>
           {/* Logo */}
           <Link href="/" style={S.logo}>
-            <span style={S.logoIcon}>◈</span>
-            <span style={S.logoText}>AxLead</span>
+            <img src="/logo.png" alt="AxLead" style={{ height: 36, width: 'auto', display: 'block' }} />
           </Link>
 
           {/* Desktop Nav — oculto no mobile via JS */}
@@ -139,8 +138,7 @@ const S: Record<string, React.CSSProperties> = {
     display: 'flex', alignItems: 'center', gap: 10,
     textDecoration: 'none', flexShrink: 0,
   },
-  logoIcon: { fontSize: 22, color: 'var(--indigo)', lineHeight: 1 },
-  logoText: { fontSize: 17, fontWeight: 700, color: 'var(--navy)', letterSpacing: '-0.3px' },
+
   navLinks: { display: 'flex', gap: 4, flex: 1 },
   navLink: {
     fontSize: 14, fontWeight: 500, color: 'var(--gray-500)',
