@@ -36,7 +36,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         <div style={S.navInner}>
           {/* Logo */}
           <Link href="/" style={S.logo}>
-            <img src="/logo.png" alt="AxLead" style={{ height: 36, width: 'auto', display: 'block' }} />
+            <img src="/logo.png" alt="AxLead" style={{ height: 36, width: 'auto', maxWidth: 160, objectFit: 'contain', display: 'block' }} />
           </Link>
 
           {/* Desktop Nav — oculto no mobile via JS */}

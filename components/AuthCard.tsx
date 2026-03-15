@@ -16,7 +16,7 @@ export default function AuthCard({ title, subtitle, children, footer }: Props) {
       <div style={S.card}>
         {/* Logo */}
         <Link href="/" style={S.logo}>
-          <img src="/logo.png" alt="AxLead" style={{ height: 40, width: 'auto', display: 'block' }} />
+          <img src="/logo.png" alt="AxLead" style={{ height: 40, width: 'auto', maxWidth: 180, objectFit: 'contain', display: 'block' }} />
         </Link>
 
         <div style={S.divider} />
