@@ -1,6 +1,9 @@
 import { useState } from 'react'
+import { useSession } from 'next-auth/react'
 import { Lead, Source, Priority } from '../lib/types'
 import { api } from '../lib/api'
+
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'
 
 interface Props {
   leads: Lead[]
@@ -23,6 +26,8 @@ const SOURCE_COLORS: Record<Source, string> = {
 }
 
 export default function LeadsTable({ leads, jobId, niche }: Props) {
+  const { data: session } = useSession()
+  const token = session?.token || ''
   const [filterCity, setFilterCity] = useState('')
   const [filterSource, setFilterSource] = useState<Source | ''>('')
   const [filterPriority, setFilterPriority] = useState<Priority | ''>('')
@@ -52,9 +57,25 @@ export default function LeadsTable({ leads, jobId, niche }: Props) {
   const totalPages = Math.ceil(filtered.length / PER_PAGE)
   const paginated = filtered.slice((page - 1) * PER_PAGE, page * PER_PAGE)
 
-  function handleDownload(format: 'md' | 'csv') {
-    const url = api.downloadUrl(jobId, format, niche)
-    window.open(url, '_blank')
+  async function handleDownload(format: 'md' | 'csv') {
+    try {
+      const url = `${API_URL}/api/scrape/download/${jobId}?format=${format}&niche=${encodeURIComponent(niche)}`
+      const res = await fetch(url, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      if (!res.ok) throw new Error('Erro ao baixar arquivo.')
+      const blob = await res.blob()
+      const objectUrl = URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      const today = new Date().toISOString().slice(0, 10)
+      const safeNiche = niche.replace(/[^a-z0-9]/gi, '_').toLowerCase()
+      a.href = objectUrl
+      a.download = `leads_${safeNiche}_${today}.${format}`
+      a.click()
+      URL.revokeObjectURL(objectUrl)
+    } catch {
+      alert('Erro ao baixar o arquivo. Tente novamente.')
+    }
   }
 
   function resetFilters() {
