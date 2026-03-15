@@ -37,6 +37,17 @@ export interface AccumulatedStats {
   lastScrapedAt: string | null
 }
 
+export interface SessionSummary {
+  id: string
+  user_id: string
+  niche: string
+  cities: string[]
+  sources: string[]
+  site_filter: string
+  total_leads: number
+  created_at: string
+}
+
 export const api = {
   startScrape: (config: ScrapeConfig, token: string): Promise<{ jobId: string }> =>
     request('POST', '/api/scrape/start', config, token),
@@ -52,6 +63,15 @@ export const api = {
     fetch(`${API_URL}/health`).then(r => r.json()).then(d => d.data || d),
   downloadUrl: (jobId: string, format: 'md' | 'csv', niche: string): string =>
     `${API_URL}/api/scrape/download/${jobId}?format=${format}&niche=${encodeURIComponent(niche)}`,
+}
+
+export const historyApi = {
+  list: (token: string): Promise<{ sessions: SessionSummary[]; total: number }> =>
+    request('GET', '/api/history', undefined, token),
+  downloadUrl: (sessionId: string, format: 'md' | 'csv', token: string): string =>
+    `${API_URL}/api/history/${sessionId}/download?format=${format}&token=${encodeURIComponent(token)}`,
+  delete: (sessionId: string, token: string): Promise<void> =>
+    request('DELETE', `/api/history/${sessionId}`, undefined, token),
 }
 
 export interface AdminUser {

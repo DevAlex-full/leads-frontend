@@ -8,6 +8,7 @@ import ProgressPanel from '../components/ProgressPanel'
 import LeadsTable from '../components/LeadsTable'
 import { ScrapeConfig, JobStatus, Lead, LogEntry } from '../lib/types'
 import { api, ApiError } from '../lib/api'
+import HistoryPanel from '../components/HistoryPanel'
 
 const POLL_INTERVAL = 3000
 
@@ -134,6 +135,7 @@ export default function Home() {
         )}
 
         <StatsCards leads={leads} leadsCount={leadsCount || leads.length} accumulated={accumulated} />
+        <HistoryPanel />
         <ConfigPanel onStart={handleStart} onCancel={handleCancel} isRunning={isRunning} />
 
         {showProgress && (
