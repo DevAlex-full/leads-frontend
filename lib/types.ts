@@ -22,6 +22,9 @@ export interface Lead {
   source: Source
   priority: Priority
   scrapedAt: string
+  cnpj?: string
+  razaoSocial?: string
+  enriched?: boolean
 }
 
 export interface LogEntry {
@@ -51,11 +54,12 @@ export interface JobResultsResponse {
 
 export interface ScrapeConfig {
   apiKey: string
-  niche: string
+  niches: string[]
   cities: string[]
   perCity: number
   sources: Source[]
   siteFilter: SiteFilter
+  requiredFields?: string[]  // ex: ['email','instagram','whatsapp']
 }
 
 export interface ValidationError {

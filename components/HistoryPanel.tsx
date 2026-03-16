@@ -18,7 +18,9 @@ export default function HistoryPanel() {
   const [error, setError] = useState('')
   const [downloading, setDownloading] = useState<string | null>(null)
   const [deleting, setDeleting] = useState<string | null>(null)
+  const [enriching, setEnriching] = useState<string | null>(null)
   const [open, setOpen] = useState(false)
+
 
   const load = useCallback(async () => {
     if (!token) return
@@ -51,6 +53,45 @@ export default function HistoryPanel() {
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : 'Erro ao baixar.')
     } finally { setDownloading(null) }
+  }
+
+  async function handleEnrich(sess: SessionSummary) {
+    setEnriching(sess.id)
+    setError('')
+    try {
+      const res = await fetch(`${API_URL}/api/enrich/session/${sess.id}`, {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+      })
+      const data = await res.json()
+      if (!data.success) throw new Error(data.error || 'Erro ao enriquecer.')
+      const { jobId } = data.data
+
+      // Poll a cada 4s até terminar
+      let attempts = 0
+      const poll = setInterval(async () => {
+        attempts++
+        try {
+          const sr = await fetch(`${API_URL}/api/enrich/job/${encodeURIComponent(jobId)}`, {
+            headers: { Authorization: `Bearer ${token}` },
+          })
+          const sdata = await sr.json()
+          const job = sdata.data || {}
+          if (job.status === 'done' || job.status === 'failed' || attempts > 60) {
+            clearInterval(poll)
+            setEnriching(null)
+            if (job.status === 'done') {
+              alert(`Enriquecimento concluído! ${job.enriched ?? 0} leads atualizados.`)
+            } else if (job.status === 'failed') {
+              setError('Enriquecimento falhou. Tente novamente.')
+            }
+          }
+        } catch { clearInterval(poll); setEnriching(null) }
+      }, 4000)
+    } catch (err: unknown) {
+      setError(err instanceof ApiError ? err.message : 'Erro ao enriquecer.')
+      setEnriching(null)
+    }
   }
 
   async function handleDelete(id: string) {
@@ -153,6 +194,10 @@ export default function HistoryPanel() {
                     <button onClick={() => handleDownload(sess, 'csv')} disabled={downloading === `${sess.id}_csv`}
                       style={{ fontSize: 12, fontWeight: 700, padding: '6px 12px', background: 'var(--indigo-pale)', color: 'var(--indigo)', border: '1px solid var(--indigo-light)', borderRadius: 'var(--radius-sm)', cursor: 'pointer', fontFamily: 'var(--font)' }}>
                       {downloading === `${sess.id}_csv` ? '...' : '.csv'}
+                    </button>
+                    <button onClick={() => handleEnrich(sess)} disabled={enriching === sess.id}
+                      style={{ fontSize: 12, fontWeight: 700, padding: '6px 12px', background: '#EEF0FB', color: '#5469D4', border: '1px solid #C7CCF0', borderRadius: 'var(--radius-sm)', cursor: 'pointer', fontFamily: 'var(--font)' }}>
+                      {enriching === sess.id ? '...' : '✦ Enriquecer'}
                     </button>
                     <button onClick={() => handleDelete(sess.id)} disabled={deleting === sess.id}
                       style={{ fontSize: 14, fontWeight: 700, padding: '6px 10px', background: 'var(--red-light)', color: 'var(--red)', border: '1px solid #FECACA', borderRadius: 'var(--radius-sm)', cursor: 'pointer', fontFamily: 'var(--font)' }}>

@@ -94,3 +94,14 @@ export const adminApi = {
   deleteUser: (id: string, token: string) =>
     request('DELETE', `/api/admin/users/${id}`, undefined, token),
 }
+
+export const enrichApi = {
+  status: (token: string): Promise<{ configured: boolean; message: string }> =>
+    request('GET', '/api/enrich/status', undefined, token),
+  enrichSession: (sessionId: string, token: string): Promise<{ jobId: string }> =>
+    request('POST', `/api/enrich/session/${sessionId}`, undefined, token),
+  enrichAll: (token: string): Promise<{ jobId: string }> =>
+    request('POST', '/api/enrich/all', undefined, token),
+  getJobStatus: (jobId: string, token: string): Promise<Record<string, unknown>> =>
+    request('GET', `/api/enrich/job/${encodeURIComponent(jobId)}`, undefined, token),
+}

@@ -23,6 +23,7 @@ export default function Home() {
   const [logs, setLogs] = useState<LogEntry[]>([])
   const [leadsCount, setLeadsCount] = useState(0)
   const [leads, setLeads] = useState<Lead[]>([])
+  const [requiredFields, setRequiredFields] = useState<string[]>([])
   const [currentNiche, setCurrentNiche] = useState('')
   const [error, setError] = useState('')
   const [isRunning, setIsRunning] = useState(false)
@@ -50,7 +51,21 @@ export default function Home() {
   async function fetchResults(id: string) {
     try {
       const result = await api.getResults(id, token)
-      setLeads(result.leads)
+      // Aplica filtro de campos obrigatórios nos leads recebidos
+      const rf = requiredFields
+      const filtered = rf.length > 0
+        ? result.leads.filter((l: Lead) => rf.every((f: string) => {
+            if (f === 'email')     return Boolean(l.email)
+            if (f === 'instagram') return Boolean(l.instagram)
+            if (f === 'whatsapp')  return Boolean((l as Lead & { whatsapp?: string }).whatsapp)
+            if (f === 'phone')     return Boolean(l.phone)
+            if (f === 'facebook')  return Boolean(l.facebook)
+            if (f === 'linkedin')  return Boolean(l.linkedin)
+            if (f === 'website')   return Boolean(l.website)
+            return true
+          }))
+        : result.leads
+      setLeads(filtered)
       // Atualiza o total acumulado após scraping concluído
       api.getAccumulatedStats(token).then((s) => setAccumulated(s.total)).catch(() => {})
     } catch (err) {
@@ -88,7 +103,7 @@ export default function Home() {
     setLogs([])
     setProgress(0)
     setProgressLabel('Iniciando...')
-    setCurrentNiche(config.niche)
+    setCurrentNiche(config.niches.join(', '))
     setIsRunning(true)
     setJobStatus('pending')
 
